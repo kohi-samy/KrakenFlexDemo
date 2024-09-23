@@ -22,3 +22,9 @@ Build and run.
 Swagger
 
   http://localhost:8080/swagger-ui/index.html#/
+
+There are three endpoints in this file:
+
+1. `GET /outages` which returns all outages in our system
+2. `GET /site-info/norwich-pear-tree` which returns specific information about a site - norwich-pear-tree
+3. `POST /site-outages/norwich-pear-tree` which expects outages for a specific site <norwich-pear-tree> to be posted to it
