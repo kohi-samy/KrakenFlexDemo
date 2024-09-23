@@ -1,7 +1,7 @@
 KrakenFlexDemo application
 
 This project is a demo application.
-External url -> https://api.krakenflex.systems/interview-tests-mock-api/v1/
+Calling the KrakenFlex mock server for data, External url -> https://api.krakenflex.systems/interview-tests-mock-api/v1/
 
 Requirements:
 
@@ -28,3 +28,10 @@ There are three endpoints in this file:
 1. `GET /outages` which returns all outages in our system
 2. `GET /site-info/norwich-pear-tree` which returns specific information about a site - norwich-pear-tree
 3. `POST /site-outages/norwich-pear-tree` which expects outages for a specific site <norwich-pear-tree> to be posted to it
+
+
+Request Object to the POST call is:
+   Filters out any outages that began before `2022-01-01T00:00:00.000Z` or don't have an ID that is in the list of
+   devices in the site information, and remaining outages, enhanced by attaching the display name of the device in the site information to each appropriate outage.
+
+You can test this using Postman or hit it via swagger.
