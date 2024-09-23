@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: demo
+
+krakenflex:
+  mock_apis_url:  https://api.krakenflex.systems/interview-tests-mock-api/v1
+  api-key: EltgJ5G8m44IzwE6UN2Y4B4NjPW77Zk6FJK3lL23
+
+demo:
+  cutOffDate: 2022-01-01T00:00:00.000Z
