@@ -3,6 +3,7 @@ package com.krakenflex.technicaltest.demo.gateway.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.krakenflex.technicaltest.demo.exception.AuthorizationException;
 import com.krakenflex.technicaltest.demo.exception.OutageServiceException;
+import com.krakenflex.technicaltest.demo.exception.RequestLimitException;
 import com.krakenflex.technicaltest.demo.gateway.KrakenMockSiteOutageClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,6 +56,10 @@ public class KrakenMockSiteOutageClientServiceImpl implements KrakenMockSiteOuta
             if(e.getStatusCode().value() == 404){
                 log.warn("Site info not available for site : {}", site);
                 throw new OutageServiceException(String.format("Site info not available for site %s", site));
+            }
+            if(e.getStatusCode().value() == 429){
+                log.warn("Exceed request count");
+                throw new RequestLimitException("Too many request made, Exceed the limit.");
             }
             if(e.getStatusCode().is5xxServerError())
             {

@@ -3,6 +3,7 @@ package com.krakenflex.technicaltest.demo.controller;
 import com.krakenflex.technicaltest.demo.dto.OutageInfo;
 import com.krakenflex.technicaltest.demo.dto.OutageResponse;
 import com.krakenflex.technicaltest.demo.exception.OutageServiceException;
+import com.krakenflex.technicaltest.demo.exception.RequestLimitException;
 import com.krakenflex.technicaltest.demo.service.OutageService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,8 +32,8 @@ public class OutageController {
     @ApiResponses(value = {
             @ApiResponse(responseCode =  "200", description = "Outages returned", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutageResponse.class))),
             @ApiResponse(responseCode =  "403", description = "Outages Not Available due to unAuth", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutageServiceException.class))),
-            @ApiResponse(responseCode =  "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutageServiceException.class))),
-
+            @ApiResponse(responseCode =  "429", description = "You've exceeded your limit for your API key.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestLimitException.class))),
+            @ApiResponse(responseCode =  "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RuntimeException.class))),
     })
     @GetMapping("/outages")
     public ResponseEntity<OutageResponse> fetchAllOutages(){

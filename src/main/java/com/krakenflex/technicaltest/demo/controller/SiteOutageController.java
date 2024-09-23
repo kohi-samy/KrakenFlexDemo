@@ -4,6 +4,7 @@ import com.krakenflex.technicaltest.demo.dto.Site;
 import com.krakenflex.technicaltest.demo.dto.SiteOutages;
 import com.krakenflex.technicaltest.demo.exception.AuthorizationException;
 import com.krakenflex.technicaltest.demo.exception.OutageServiceException;
+import com.krakenflex.technicaltest.demo.exception.RequestLimitException;
 import com.krakenflex.technicaltest.demo.service.SiteOutageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,9 +31,9 @@ public class SiteOutageController {
     @ApiResponses(value = {
             @ApiResponse(responseCode =  "200", description = "Post success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode =  "403", description = "Post unsuccessful due to unAuth", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthorizationException.class))),
+            @ApiResponse(responseCode =  "429", description = "You've exceeded your limit for your API key.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestLimitException.class))),
             @ApiResponse(responseCode =  "404", description = "Resource not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutageServiceException.class))),
             @ApiResponse(responseCode =  "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RuntimeException.class))),
-
     })
     @PostMapping("/site-outages/{siteId}")
     public ResponseEntity<String> publishFilteredSiteOutages(@PathVariable(value = "siteId") String siteId){
@@ -44,6 +45,5 @@ public class SiteOutageController {
 //    public ResponseEntity<String> createSiteOutagesManual(@RequestBody SiteOutages siteOutages, @PathVariable(value = "siteId") String siteId){
 //       return  new ResponseEntity<>(siteOutageService.createSiteOutage(siteOutages, siteId), HttpStatus.OK);
 //    }
-
 
 }

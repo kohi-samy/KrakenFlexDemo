@@ -8,6 +8,7 @@ import com.krakenflex.technicaltest.demo.dto.OutageInfo;
 import com.krakenflex.technicaltest.demo.dto.OutageResponse;
 import com.krakenflex.technicaltest.demo.exception.AuthorizationException;
 import com.krakenflex.technicaltest.demo.exception.OutageServiceException;
+import com.krakenflex.technicaltest.demo.exception.RequestLimitException;
 import com.krakenflex.technicaltest.demo.gateway.KrakenMockOutageClientService;
 import com.krakenflex.technicaltest.demo.util.KrakenflexDateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,10 @@ public class KrakenMockOutageClientServiceImpl implements KrakenMockOutageClient
             if(e.getStatusCode().value() == 403) {
                 log.warn("Un Authorized access");
                 throw new AuthorizationException("Un Authorized access");
+            }
+            if(e.getStatusCode().value() == 429){
+                log.warn("Exceed request count");
+                throw new RequestLimitException("Too many request made, Exceed the limit.");
             }
             if(e.getStatusCode().is5xxServerError())
             {

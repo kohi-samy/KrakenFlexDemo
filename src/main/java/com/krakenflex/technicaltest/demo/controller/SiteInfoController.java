@@ -4,6 +4,7 @@ import com.krakenflex.technicaltest.demo.dto.OutageResponse;
 import com.krakenflex.technicaltest.demo.dto.Site;
 import com.krakenflex.technicaltest.demo.exception.AuthorizationException;
 import com.krakenflex.technicaltest.demo.exception.OutageServiceException;
+import com.krakenflex.technicaltest.demo.exception.RequestLimitException;
 import com.krakenflex.technicaltest.demo.service.SiteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,8 +39,8 @@ public class SiteInfoController {
             @ApiResponse(responseCode =  "200", description = "Site returned", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Site.class))),
             @ApiResponse(responseCode =  "403", description = "Site Not Available due to unAuth", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthorizationException.class))),
             @ApiResponse(responseCode =  "404", description = "Site not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutageServiceException.class))),
+            @ApiResponse(responseCode =  "429", description = "You've exceeded your limit for your API key.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestLimitException.class))),
             @ApiResponse(responseCode =  "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RuntimeException.class))),
-
     })
     @GetMapping("/site-info/{site}")
     public ResponseEntity<Site> fetchSiteInfo(@PathVariable(value = "site") @Valid  String site){

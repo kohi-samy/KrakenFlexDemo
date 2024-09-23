@@ -4,6 +4,7 @@ import com.krakenflex.technicaltest.demo.dto.exception.KFCommonExceptionResponse
 import com.krakenflex.technicaltest.demo.exception.AuthorizationException;
 import com.krakenflex.technicaltest.demo.exception.OutageServiceException;
 import com.krakenflex.technicaltest.demo.exception.OutageServiceRequestValidationException;
+import com.krakenflex.technicaltest.demo.exception.RequestLimitException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,15 @@ public class KFClientRestResponseExceptionHandler extends ResponseEntityExceptio
                 HttpStatus.FORBIDDEN, ex.getMessage(), request.getRequestURI());
         log.error(EXCEPTION_KEY, ex.getMessage(), ex);
         return  new ResponseEntity<>(kfCommonExceptionResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(value = RequestLimitException.class)
+    protected ResponseEntity<Object> handleRequestLimitException(RequestLimitException ex, HttpServletRequest request){
+
+        KFCommonExceptionResponse kfCommonExceptionResponse = new KFCommonExceptionResponse(
+                HttpStatus.TOO_MANY_REQUESTS, ex.getMessage(), request.getRequestURI());
+        log.error(EXCEPTION_KEY, ex.getMessage(), ex);
+        return  new ResponseEntity<>(kfCommonExceptionResponse, HttpStatus.TOO_MANY_REQUESTS);
     }
 
     @ExceptionHandler(value = RuntimeException.class)
