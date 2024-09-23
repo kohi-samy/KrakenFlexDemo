@@ -18,3 +18,7 @@ Build and run.
   Navigate to the project root directory: cd KrakenFlexDemo
   Build the application: Maven mvn clean install
   Run the application: java -jar .\target\KrakenFlexDemo-0.0.1-SNAPSHOT.jar
+
+Swagger
+
+  http://localhost:8080/swagger-ui/index.html#/
