@@ -47,23 +47,7 @@ public class KrakenMockSiteClientServiceImpl implements KrakenMockSiteClientServ
             }
 
         }catch(HttpClientErrorException e){
-            if(e.getStatusCode().value() == 403) {
-                log.warn("Un Authorized access");
-                throw new AuthorizationException("Un Authorized access");
-            }
-            if(e.getStatusCode().value() == 404){
-                log.warn("Site info not available for site : {}", site);
-                throw new OutageServiceException(String.format("Site info not available for site %s", site));
-            }
-            if(e.getStatusCode().value() == 429){
-                log.warn("Exceed request count");
-                throw new RequestLimitException("Too many request made, Exceed the limit.");
-            }
-            if(e.getStatusCode().is5xxServerError())
-            {
-                log.warn("Internal server error");
-                throw new RuntimeException("Internal server error, please try again later. ");
-            }
+            handleMockServerException(site, e);
         }
         return siteInfo;
     }
@@ -79,4 +63,25 @@ public class KrakenMockSiteClientServiceImpl implements KrakenMockSiteClientServ
         }
         return site;
     }
+
+    private void handleMockServerException(String site, HttpClientErrorException e) {
+        if(e.getStatusCode().value() == 403) {
+            log.warn("Un Authorized access");
+            throw new AuthorizationException("Un Authorized access");
+        }
+        if(e.getStatusCode().value() == 404){
+            log.warn("Site info not available for site : {}", site);
+            throw new OutageServiceException(String.format("Site info not available for site %s", site));
+        }
+        if(e.getStatusCode().value() == 429){
+            log.warn("Exceed request count");
+            throw new RequestLimitException("Too many request made, Exceed the limit.");
+        }
+        if(e.getStatusCode().is5xxServerError())
+        {
+            log.warn("Internal server error");
+            throw new RuntimeException("Internal server error, please try again later. ");
+        }
+    }
+
 }

@@ -58,23 +58,11 @@ public class KrakenMockOutageClientServiceImpl implements KrakenMockOutageClient
             }
 
         }catch(HttpClientErrorException e){
-            if(e.getStatusCode().value() == 403) {
-                log.warn("Un Authorized access");
-                throw new AuthorizationException("Un Authorized access");
-            }
-            if(e.getStatusCode().value() == 429){
-                log.warn("Exceed request count");
-                throw new RequestLimitException("Too many request made, Exceed the limit.");
-            }
-            if(e.getStatusCode().is5xxServerError())
-            {
-                log.warn("Internal server error");
-                throw new RuntimeException("Internal server error, please try again later. ");
-            }
+            handleMockServerException(e);
         }
        return outageResponse;
     }
-    
+
     private static void parseOutageResponse(String response, OutageResponse outageResponse){
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -99,5 +87,21 @@ public class KrakenMockOutageClientServiceImpl implements KrakenMockOutageClient
         outageInfo.setBegin(KrakenflexDateUtil.parseZoneDate(data.get("begin").asText()));
         outageInfo.setEnd(KrakenflexDateUtil.parseZoneDate(data.get("end").asText()));
         outageInfoList.add(outageInfo);
+    }
+
+    private void handleMockServerException(HttpClientErrorException e) {
+        if(e.getStatusCode().value() == 403) {
+            log.warn("Un Authorized access");
+            throw new AuthorizationException("Un Authorized access");
+        }
+        if(e.getStatusCode().value() == 429){
+            log.warn("Exceed request count");
+            throw new RequestLimitException("Too many request made, Exceed the limit.");
+        }
+        if(e.getStatusCode().is5xxServerError())
+        {
+            log.warn("Internal server error");
+            throw new RuntimeException("Internal server error, please try again later. ");
+        }
     }
 }

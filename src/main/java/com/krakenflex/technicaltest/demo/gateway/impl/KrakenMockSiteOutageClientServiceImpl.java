@@ -44,32 +44,37 @@ public class KrakenMockSiteOutageClientServiceImpl implements KrakenMockSiteOuta
         try {
             response = restTemplate.exchange(createSiteOutageUrl, HttpMethod.POST, httpEntity, String.class);
         }catch(HttpClientErrorException e){
-            if(e.getStatusCode().value() == 400)
-            {
-                log.warn("Wrong status configured in server");
-                return String.format("Outages Submitted for the site %s" , site);
-            }
-            if(e.getStatusCode().value() == 403) {
-                log.warn("Un Authorized access");
-                throw new AuthorizationException("Un Authorized access");
-            }
-            if(e.getStatusCode().value() == 404){
-                log.warn("Site info not available for site : {}", site);
-                throw new OutageServiceException(String.format("Site info not available for site %s", site));
-            }
-            if(e.getStatusCode().value() == 429){
-                log.warn("Exceed request count");
-                throw new RequestLimitException("Too many request made, Exceed the limit.");
-            }
-            if(e.getStatusCode().is5xxServerError())
-            {
-                log.warn("Internal server error");
-                throw new RuntimeException("Internal server error, please try again later. ");
-            }
+            if (handleMockServerException(site, e)) return String.format("Outages Submitted for the site %s", site);
         }
 
         return Objects.nonNull(response) ? response.getBody() : "";
 
+    }
+
+    private boolean handleMockServerException(String site, HttpClientErrorException e) {
+        if(e.getStatusCode().value() == 400)
+        {
+            log.warn("Wrong status configured in server");
+            return true;
+        }
+        if(e.getStatusCode().value() == 403) {
+            log.warn("Un Authorized access");
+            throw new AuthorizationException("Un Authorized access");
+        }
+        if(e.getStatusCode().value() == 404){
+            log.warn("Site info not available for site : {}", site);
+            throw new OutageServiceException(String.format("Site info not available for site %s", site));
+        }
+        if(e.getStatusCode().value() == 429){
+            log.warn("Exceed request count");
+            throw new RequestLimitException("Too many request made, Exceed the limit.");
+        }
+        if(e.getStatusCode().is5xxServerError())
+        {
+            log.warn("Internal server error");
+            throw new RuntimeException("Internal server error, please try again later. ");
+        }
+        return false;
     }
 
 }
