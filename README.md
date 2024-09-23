@@ -1,14 +1,14 @@
-KrakenFlexDemo application
+# KrakenFlexDemo Application
 
-This project is a demo application.
-Calling the KrakenFlex mock server for data, External url -> https://api.krakenflex.systems/interview-tests-mock-api/v1/
+This project is a demo application. 
+In the backend it calling the KrakenFlex mock server for data, External url -> https://api.krakenflex.systems/interview-tests-mock-api/v1/
 
-Requirements:
+# Requirements:
 
   Java 17 
   Maven 3.8.8
   
-Project setup and dependency:
+# Project setup and dependency:
 
 Clone this repository to your local machine:
   https://github.com/kohi-samy/KrakenFlexDemo.git
