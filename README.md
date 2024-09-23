@@ -9,7 +9,7 @@ Java 17
 Maven 3.8.8
 Project setup and dependency:
 Clone this repository to your local machine:
-https://github.com/vasanthekumar/country-info-service.git
+https://github.com/kohi-samy/KrakenFlexDemo.git
 
 Build and run.
 
