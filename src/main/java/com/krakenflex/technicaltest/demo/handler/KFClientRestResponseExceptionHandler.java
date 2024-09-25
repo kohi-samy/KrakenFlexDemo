@@ -1,10 +1,7 @@
 package com.krakenflex.technicaltest.demo.handler;
 
 import com.krakenflex.technicaltest.demo.dto.exception.KFCommonExceptionResponse;
-import com.krakenflex.technicaltest.demo.exception.AuthorizationException;
-import com.krakenflex.technicaltest.demo.exception.OutageServiceException;
-import com.krakenflex.technicaltest.demo.exception.OutageServiceRequestValidationException;
-import com.krakenflex.technicaltest.demo.exception.RequestLimitException;
+import com.krakenflex.technicaltest.demo.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -44,6 +41,15 @@ public class KFClientRestResponseExceptionHandler extends ResponseEntityExceptio
                 HttpStatus.TOO_MANY_REQUESTS, ex.getMessage(), request.getRequestURI());
         log.error(EXCEPTION_KEY, ex.getMessage(), ex);
         return  new ResponseEntity<>(kfCommonExceptionResponse, HttpStatus.TOO_MANY_REQUESTS);
+    }
+
+    @ExceptionHandler(value = BadRequestException.class)
+    protected ResponseEntity<Object> handleBadRequestException(BadRequestException ex, HttpServletRequest request){
+
+        KFCommonExceptionResponse kfCommonExceptionResponse = new KFCommonExceptionResponse(
+                HttpStatus.BAD_REQUEST, ex.getMessage(), request.getRequestURI());
+        log.error(EXCEPTION_KEY, ex.getMessage(), ex);
+        return  new ResponseEntity<>(kfCommonExceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = RuntimeException.class)

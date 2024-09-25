@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.krakenflex.technicaltest.demo.constant.DemoConstants.SITE_OUTAGE_PATH;
 import static com.krakenflex.technicaltest.demo.util.KrakenflexClientUtil.getHttpEntity;
@@ -42,10 +43,12 @@ public class KrakenMockSiteOutageClientServiceTest {
 
         String postSiteOutageUrl = "https://api.krakenflex.systems/interview-tests-mock-api/v1" + SITE_OUTAGE_PATH + "testSite" ;
         String api_key = "EltgJ5G8m44IzwE6UN2Y4B4NjPW77Zk6FJK3lL23";
-        when(restTemplate.exchange(postSiteOutageUrl, HttpMethod.POST, getHttpEntity(api_key, getJsonNode()), String.class)).thenReturn(ResponseEntity.ok("Successfully added"));
-        String response= krakenMockSiteOutageClientService.createSiteOutage(getJsonNode(), "testSite");
+        Object obj = new Object();
+        when(restTemplate.exchange(postSiteOutageUrl, HttpMethod.POST, getHttpEntity(api_key, getJsonNode()), Object.class)).thenReturn(ResponseEntity.ok(obj));
+        Object response= krakenMockSiteOutageClientService.createSiteOutage(getJsonNode(), "testSite");
 
-        assertEquals("Successfully added", response);
+        assertEquals(obj,response);
+
 
     }
 

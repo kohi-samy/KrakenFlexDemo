@@ -4,7 +4,7 @@ import com.krakenflex.technicaltest.demo.dto.SiteOutages;
 
 public interface SiteOutageService {
 
-//    String createSiteOutage(SiteOutages siteOutages, String site);
+    Object filterOutagesOfSiteAndPost(String site);
 
-    String filterOutagesOfSiteAndPost(String site);
+   // String createSiteOutage(SiteOutages siteOutages, String site);
 }

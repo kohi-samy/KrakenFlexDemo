@@ -11,10 +11,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 @RestController
 @Slf4j
@@ -36,14 +39,14 @@ public class SiteOutageController {
             @ApiResponse(responseCode =  "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RuntimeException.class))),
     })
     @PostMapping("/site-outages/{siteId}")
-    public ResponseEntity<String> publishFilteredSiteOutages(@PathVariable(value = "siteId") String siteId){
-
-        return  new ResponseEntity<>(siteOutageService.filterOutagesOfSiteAndPost(siteId), HttpStatus.OK);
+    public ResponseEntity<Object> publishFilteredSiteOutages(@PathVariable(value = "siteId") String siteId){
+        Object response = siteOutageService.filterOutagesOfSiteAndPost(siteId);
+        return  new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-//    @PostMapping("/manual/site-outages/{siteId}")
-//    public ResponseEntity<String> createSiteOutagesManual(@RequestBody SiteOutages siteOutages, @PathVariable(value = "siteId") String siteId){
-//       return  new ResponseEntity<>(siteOutageService.createSiteOutage(siteOutages, siteId), HttpStatus.OK);
-//    }
+    /*@PostMapping("/manual/site-outages/{siteId}")
+    public ResponseEntity<String> createSiteOutagesManual(@RequestBody @NotNull SiteOutages siteOutages, @PathVariable(value = "siteId") String siteId){
+        return  new ResponseEntity<>(siteOutageService.createSiteOutage(siteOutages, siteId), HttpStatus.OK);
+    }*/
 
 }

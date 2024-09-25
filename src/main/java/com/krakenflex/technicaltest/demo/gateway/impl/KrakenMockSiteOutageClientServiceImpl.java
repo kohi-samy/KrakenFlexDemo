@@ -2,6 +2,7 @@ package com.krakenflex.technicaltest.demo.gateway.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.krakenflex.technicaltest.demo.exception.AuthorizationException;
+import com.krakenflex.technicaltest.demo.exception.BadRequestException;
 import com.krakenflex.technicaltest.demo.exception.OutageServiceException;
 import com.krakenflex.technicaltest.demo.exception.RequestLimitException;
 import com.krakenflex.technicaltest.demo.gateway.KrakenMockSiteOutageClientService;
@@ -34,28 +35,33 @@ public class KrakenMockSiteOutageClientServiceImpl implements KrakenMockSiteOuta
         this.restTemplate = restTemplate;
     }
     @Override
-    public String createSiteOutage(JsonNode siteOutages, String site) {
+    public Object createSiteOutage(JsonNode siteOutages, String site) {
 
         String createSiteOutageUrl = krakenflex_mock_apis_url + SITE_OUTAGE_PATH + site;
         HttpEntity<String> httpEntity = getHttpEntity(api_key, siteOutages);
 
-        ResponseEntity<String> response = null;
+        Object response = null;
 
         try {
-            response = restTemplate.exchange(createSiteOutageUrl, HttpMethod.POST, httpEntity, String.class);
+            ResponseEntity<Object> result = restTemplate.exchange(createSiteOutageUrl, HttpMethod.POST, httpEntity, Object.class);
+
+            if(result.getStatusCode().is2xxSuccessful()){
+                response = result.getBody();
+            }
+
         }catch(HttpClientErrorException e){
-            if (handleMockServerException(site, e)) return String.format("Outages Submitted for the site %s", site);
+            handleMockServerException(site, e);
         }
 
-        return Objects.nonNull(response) ? response.getBody() : "";
+        return response;
 
     }
 
-    private boolean handleMockServerException(String site, HttpClientErrorException e) {
+    private void handleMockServerException(String site, HttpClientErrorException e) {
         if(e.getStatusCode().value() == 400)
         {
-            log.warn("Wrong status configured in server");
-            return true;
+            log.warn("Bad request, not receiving expected content");
+            throw new BadRequestException("Bad request, please check the content");
         }
         if(e.getStatusCode().value() == 403) {
             log.warn("Un Authorized access");
@@ -74,7 +80,6 @@ public class KrakenMockSiteOutageClientServiceImpl implements KrakenMockSiteOuta
             log.warn("Internal server error");
             throw new RuntimeException("Internal server error, please try again later. ");
         }
-        return false;
     }
 
 }

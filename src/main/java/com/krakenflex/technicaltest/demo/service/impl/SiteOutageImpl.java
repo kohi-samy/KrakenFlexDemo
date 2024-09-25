@@ -39,7 +39,7 @@ public class SiteOutageImpl implements SiteOutageService {
     }
 
     @Override
-    public String filterOutagesOfSiteAndPost(String site) {
+    public Object filterOutagesOfSiteAndPost(String site) {
 
         Site siteInfo = krakenMockSiteClientService.fetchSiteInfo(site);
 
@@ -75,7 +75,7 @@ public class SiteOutageImpl implements SiteOutageService {
         List<String> outageJsonList = new ArrayList<>();
 
         outages.getOutageInfoList().stream()
-                .filter(o -> o.getBegin().isAfter(zdt) && deviceMap.containsKey(o.getId()))
+                .filter(o -> !(o.getBegin().isBefore(zdt)) && deviceMap.containsKey(o.getId()))
                 .forEach(e -> mapToJson(e, outageJsonList, deviceMap));
 
         if(outageJsonList.isEmpty()){
@@ -120,31 +120,31 @@ public class SiteOutageImpl implements SiteOutageService {
         return jsonNode;
     }
 
-//    @Override
-//    public String createSiteOutage(SiteOutages siteOutages, String site) {
-//
-//        List<String> outageList = new ArrayList<>();
-//
-//        for (EnhancedOutageInfo e : siteOutages.getSiteOutages()) {
-//            mapToJson(e, outageList);
-//        }
-//
-//        JsonNode jsonNode = getJsonNode(outageList);
-//
-//        return krakenMockSiteOutageClientService.createSiteOutage(jsonNode, site);
-//    }
+   /* @Override
+    public String createSiteOutage(SiteOutages siteOutages, String site) {
 
-//    private void mapToJson(EnhancedOutageInfo enhancedOutageInfo, List<String> outageList){
-//
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        try {
-//            String objectString = objectMapper.writeValueAsString(enhancedOutageInfo);
-//            outageList.add(objectString);
-//
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+        List<String> outageList = new ArrayList<>();
+
+        for (EnhancedOutageInfo e : siteOutages.getSiteOutages()) {
+            mapToJson(e, outageList);
+        }
+
+        JsonNode jsonNode = getJsonNode(outageList);
+
+        return krakenMockSiteOutageClientService.createSiteOutage(jsonNode, site);
+    }*/
+
+    private void mapToJson(EnhancedOutageInfo enhancedOutageInfo, List<String> outageList){
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            String objectString = objectMapper.writeValueAsString(enhancedOutageInfo);
+            outageList.add(objectString);
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
